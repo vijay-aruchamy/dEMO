@@ -22,7 +22,7 @@ public class UserService {
     public void createUser(String username, String plainPassword) {
         // Encode the plain password using BCrypt
         String encodedPassword = passwordEncoder.encode(plainPassword);
-
+ System.out.println("entering");
         // Create a new user with the encoded password
         User user = new User();
         user.setUsername(username);
