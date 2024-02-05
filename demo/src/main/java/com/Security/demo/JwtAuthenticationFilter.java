@@ -1,7 +1,9 @@
 package com.Security.demo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.Security.demo.AuthController.UserCredentials;
@@ -17,6 +19,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
+     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
         setFilterProcessesUrl("/api/login");
@@ -31,10 +37,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             UserCredentials userCredentials = mapper.readValue(inputStream, UserCredentials.class);
             System.out.println("Received authentication request for user: " + userCredentials.getUsername());
+            // UserService userService=new UserService();
+            // userService.changePass();
 
             // Create an authentication token with the provided username and password
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userCredentials.getUsername(), userCredentials.getPassword());
+                    new UsernamePasswordAuthenticationToken(userCredentials.getUsername(), passwordEncoder.encode(userCredentials.getPassword()));
                              
             // Perform authentication
             System.out.println("Authentication successful for user: " + userCredentials.getUsername());
